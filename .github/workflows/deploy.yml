@@ -12,9 +12,14 @@ jobs:
       - name: Install newman
         run: npm install -g newman newman-reporter-htmlextra
       - name: Print PWD
-        run: pwd
+        shell: bash
+        run: |
+          pwd
+          ls /app
       - name: Test and Generate Report
-        run: newman run /app/Postman_Tests_Collection.json -r htmlextra --reporter-htmlextra-export /app/reports/report.html
+        shell: bash
+        run: |
+          newman run /app/Postman_Tests_Collection.json -r htmlextra --reporter-htmlextra-export /app/reports/report.html
       - name: Create branch for release
         run: |
           git config user.name "GitHub Actions"

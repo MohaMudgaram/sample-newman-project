@@ -10,16 +10,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install newman
-        run: npm install -g newman newman-reporter-htmlextra
-      - name: Print PWD
         shell: bash
-        run: |
-          pwd
-          ls /app
+        run: npm install -g newman newman-reporter-htmlextra
       - name: Test and Generate Report
         shell: bash
         run: |
-          newman run /app/Postman_Tests_Collection.json -r htmlextra --reporter-htmlextra-export /app/reports/report.html
+          newman run app/Postman_Tests_Collection.json -r htmlextra --reporter-htmlextra-export app/reports/report.html
       - name: Create branch for release
         run: |
           git config user.name "GitHub Actions"
@@ -32,5 +28,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./app/reports/report.html
+          publish_dir: app/reports/report.html
           publish_branch: ${{ github.ref }}

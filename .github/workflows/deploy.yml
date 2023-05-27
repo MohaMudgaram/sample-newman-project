@@ -8,9 +8,11 @@ jobs:
     container:
       image: bitnami/node:latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install newman
         run: npm install -g newman newman-reporter-htmlextra
+      - name: Print PWD
+        run: pwd
       - name: Test and Generate Report
         run: newman run /app/Postman_Tests_Collection.json -r htmlextra --reporter-htmlextra-export /app/reports/report.html
       - name: Create branch for release

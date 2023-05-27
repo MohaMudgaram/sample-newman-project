@@ -9,6 +9,8 @@ jobs:
       image: bitnami/node:latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PAT_30_DAYS }}
       - name: Install newman
         shell: bash
         run: npm install -g newman newman-reporter-htmlextra
@@ -17,7 +19,10 @@ jobs:
         run: |
           newman run app/Postman_Tests_Collection.json -r htmlextra --reporter-htmlextra-export app/reports/report.html
       - name: Create branch for release
+        shell: bash
         run: |
+          pwd
+          ls -a
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git checkout -b ${{ github.ref }}

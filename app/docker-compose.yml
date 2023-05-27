@@ -1,0 +1,6 @@
+version: "3"
+services:
+  myservice:
+    image: myimage
+    volumes:
+      - ./reports/:/app/reports

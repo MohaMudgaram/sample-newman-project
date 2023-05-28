@@ -34,7 +34,7 @@ jobs:
           personal_token: ${{ secrets.PAT_30_DAYS }}
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
-          publish_dir: app/reports/index.html
+          publish_dir: ./app/reports/
           keep_files: true
           tag_name: ${{ steps.prepare_tag.outputs.DEPLOY_TAG_NAME }}
           tag_message: "Deployment ${{ github.ref_name }}"

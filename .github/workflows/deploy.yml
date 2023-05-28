@@ -21,14 +21,7 @@ jobs:
         shell: bash
         run: |
           newman run app/Postman_Tests_Collection.json -r htmlextra --reporter-htmlextra-export app/reports/index.html
-
-      - name: Prepare tag for Github pages
-        id: prepare_tag
-        if: startsWith(github.ref, 'refs/tags/')
-        run: |
-          echo "DEPLOY_TAG_NAME=gh-pages-${GITHUB_REF}" >> "${GITHUB_OUTPUT}"
-
-      - name: Deploy report
+      - name: Publish report to Github pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.PAT_30_DAYS }}
@@ -36,5 +29,3 @@ jobs:
           user_email: "github-actions[bot]@users.noreply.github.com"
           publish_dir: ./app/reports/
           keep_files: true
-          tag_name: ${{ steps.prepare_tag.outputs.DEPLOY_TAG_NAME }}
-          tag_message: "Deployment ${{ github.ref_name }}"

@@ -26,7 +26,7 @@ jobs:
         id: prepare_tag
         if: startsWith(github.ref, 'refs/tags/')
         run: |
-          echo "DEPLOY_TAG_NAME=gh-pages-${TAG_NAME}" >> "${GITHUB_OUTPUT}"
+          echo "DEPLOY_TAG_NAME=gh-pages-${GITHUB_REF}" >> "${GITHUB_OUTPUT}"
 
       - name: Deploy report
         uses: peaceiris/actions-gh-pages@v3

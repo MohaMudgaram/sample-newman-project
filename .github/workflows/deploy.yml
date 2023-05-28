@@ -1,14 +1,17 @@
 name: Run Tests and Publish Report
 on:
-  push:
   workflow_dispatch:
+  push:
+    tags:
+      - "v*.*.*"
 jobs:
   build:
     runs-on: ubuntu-latest
     container:
       image: bitnami/node:latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.PAT_30_DAYS }}
       - name: Install newman
@@ -18,20 +21,30 @@ jobs:
         shell: bash
         run: |
           newman run app/Postman_Tests_Collection.json -r htmlextra --reporter-htmlextra-export app/reports/report.html
-      - name: Create branch for release
-        shell: bash
+
+      # - name: Deploy the Test Report branch
+      #   shell: bash
+      #   run: |
+      #     git config user.name github-actions[bot]
+      #     git config user.email github-actions[bot]@users.noreply.github.com
+      #     git checkout -b ${{ github.ref }}
+      #     git add .
+      #     git commit -m "Deploy Test Report branch"
+      #     git push -u origin ${{ github.ref }}
+
+      - name: Prepare tag for Github pages
+        id: prepare_tag
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
-          pwd
-          ls -a
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git checkout -b ${{ github.ref }}
-          git add .
-          git commit -m "Deploy ${GITHUB_REF#refs/tags/}"
-          git push -u origin ${{ github.ref }}
+          echo "DEPLOY_TAG_NAME=gh-pages-${TAG_NAME}" >> "${GITHUB_OUTPUT}"
+
       - name: Deploy report
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          personal_token: ${{ secrets.PAT_30_DAYS }}
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@users.noreply.github.com"
           publish_dir: app/reports/report.html
-          publish_branch: ${{ github.ref }}
+          keep_files: true
+          tag_name: ${{ steps.prepare_tag.outputs.DEPLOY_TAG_NAME }}
+          tag_message: "Deployment ${{ github.ref_name }}"
